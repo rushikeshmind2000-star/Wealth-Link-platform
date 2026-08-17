@@ -15,11 +15,7 @@
     <artifactId>wealth-link-platform</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <name>wealth-link-platform</name>
-<<<<<<< HEAD
-    <description>Wealth Link Platform - Dev1 Foundation module (Identity, Reference Data, Customer, Account)</description>
-=======
     <description>Wealth Link Platform - Dev1 Foundation (Identity, Reference Data, Customer, Account) + Dev2 Funds &amp; Market Data (Funds, Providers, FX, Prices, Imports)</description>
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
     <properties>
         <java.version>17</java.version>

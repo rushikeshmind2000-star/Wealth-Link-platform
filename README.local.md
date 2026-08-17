@@ -1,17 +1,20 @@
-<<<<<<< HEAD
-# Wealth Link Platform — Dev 1 (Foundation)
+# Wealth Link Platform — Dev 1 (Foundation) + Dev 2 (Funds & Market Data)
 
 Java 17 / Spring Boot / PostgreSQL / Modular monolith.
 
-This repo currently contains **Dev 1's scope** only, per the architecture
-document's team split (Section 15): **Identity & Access, Country / Market
-Config, Customer Management, Accounts** — the tables every other module
-(Funds/FX, Portfolio/Trading/Ledger, Dividends/Reconciliation/Audit) foreign
-keys into. It is the piece that has to land first so Devs 2–4 can wire real
-FKs on Day 2.
+This repo now contains **Dev 1's scope** (merged, per the architecture
+document's team split, Section 15: Identity & Access, Country / Market
+Config, Customer Management, Accounts) plus **Dev 2's scope** built on top
+of it: **Funds, Share Classes, Providers, FX Rates, Fund Prices, and the
+Import pipeline** (Section 11 / DEV2-D1..D4 in the Jira doc).
 
-## Modules included
-=======
+Because Dev 1's foundation module is already merged into this codebase,
+Dev 2's entities wire **real `@ManyToOne` foreign keys directly into
+`Currency`/`Country`** rather than the temporary UUID-stub pattern the
+architecture doc describes for when Dev 1 hasn't landed yet — Day 1 and
+Day 2 of the Dev 2 plan are effectively collapsed into one step here.
+
+## Dev 2 modules included
 # Wealth Link Platform — Dev 1 (Foundation) + Dev 2 (Funds & Market Data)
 
 Java 17 / Spring Boot / PostgreSQL / Modular monolith.
@@ -57,7 +60,6 @@ which runs after Dev 1's `V1__dev1_foundation.sql` and references its
   architecture doc's Section 32 candidate list.
 
 ## Dev 1 modules included (unchanged, merged upstream)
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
 | Module | Entities |
 |---|---|
@@ -95,16 +97,10 @@ it will never auto-generate or alter the schema).
    mvn clean spring-boot:run
    ```
 
-<<<<<<< HEAD
-   On startup, Flyway automatically applies `V1__dev1_foundation.sql`,
-   which creates all foundation tables and seeds NOK/SEK/DKK/EUR + NO/SE/DK
-   reference data (per the Day 4 handoff notes in the architecture doc).
-=======
    On startup, Flyway automatically applies `V1__dev1_foundation.sql` then
    `V2__dev2_funds_market_data.sql` in order, creating all foundation +
    funds/market-data tables and seeding NOK/SEK/DKK/EUR + NO/SE/DK
    (Dev 1) and providers/FX sources (Dev 2) reference data.
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
 3. The app starts on `http://localhost:8080` (no REST controllers are
    wired yet — this milestone is schema + JPA entities + tests, per the
@@ -120,25 +116,13 @@ mvn test
 Two kinds of tests are included, matching the doc's Day 1 / Day 2 split:
 
 **Entity-level unit tests** (Day 1, no database):
-<<<<<<< HEAD
-`AppUserTest`, `CustomerTest`, `AccountTest` — verify the `@PrePersist`
-defaulting logic (status defaults, timestamps) directly on the entity.
-=======
 `AppUserTest`, `CustomerTest`, `AccountTest` (Dev 1), `FundTest`,
 `ImportBatchTest` (Dev 2) — verify the `@PrePersist` defaulting logic
 (status defaults, timestamps) directly on the entity.
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
 **Repository-layer integration tests** (Day 2, real Postgres via
 Testcontainers — not H2, per the doc's explicit call-out that H2 doesn't
 give real NUMERIC precision / constraint behavior):
-<<<<<<< HEAD
-- `CurrencyRepositoryIT` / `MarketRepositoryIT` — Country / Market Config
-- `IdentityRepositoryIT` — App user, role, and the user_role RBAC junction
-- `CustomerRepositoryIT` — Customer, contacts, identifiers, including the
-  partial-unique-index rule ("one primary contact per type")
-- `AccountRepositoryIT` — Account, joint account ownership
-=======
 - `CurrencyRepositoryIT` / `MarketRepositoryIT` — Country / Market Config (Dev 1)
 - `IdentityRepositoryIT` — App user, role, and the user_role RBAC junction (Dev 1)
 - `CustomerRepositoryIT` — Customer, contacts, identifiers, including the
@@ -150,7 +134,6 @@ give real NUMERIC precision / constraint behavior):
   FundPrice deduplication test (Dev 2)
 - `ImportRepositoryIT` — ImportJob defaulting, ImportBatch idempotency-key
   retry rejection, per-item failure persistence (Dev 2)
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
 All integration tests extend `AbstractIntegrationTest`, which declares a
 single shared Postgres container (the Testcontainers "singleton container"
@@ -171,16 +154,6 @@ spring:
 Then create an empty database with that name — Flyway will build the schema
 for you on first run.
 
-<<<<<<< HEAD
-## Handing off to Dev 2 / Dev 3 / Dev 4
-
-Once this module is merged, the other devs replace their stubbed `UUID`
-foreign-key columns with real `@ManyToOne` references into these entities
-(`Currency`, `Country`, `Customer`, `Account`), exactly as described in
-Section 15 / Day 2 of the architecture doc. Their own Flyway migrations
-should be added as `V2__...`, `V3__...`, etc., each `references` — ing the
-tables created here.
-=======
 ## Handing off to Dev 3 / Dev 4
 
 Per Section 44 of the architecture doc, Dev 2 → Dev 3/4 should communicate:
@@ -207,17 +180,10 @@ Key facts Dev 3/4 need about this module:
 - `fx_rate` uniqueness is `(base_currency_id, quote_currency_id, rate_date, rate_type, source_id)`.
 - All money/rate columns use `numeric(24,8)`, per the architecture doc's data-type table.
 - Seeded reference rows exist for providers (`MORNINGSTAR`, `BLOOMBERG`, `MANUAL`) and FX sources (`ECB`, `MANUAL`).
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744
 
 ## What's *not* in this repo yet
 
 Per scope, this is schema + entities + tests only — no REST controllers, no
 business logic (matching engines, reconciliation algorithms, reporting),
-<<<<<<< HEAD
-and no other developer's tables (Funds/FX/Pricing, Portfolio/Trading/Ledger,
-Dividends/Reconciliation/Audit). Those are Devs 2–4's deliverables, built on
-top of this foundation.
-=======
 and no Dev 3/Dev 4 tables (Portfolio/Trading/Ledger, Dividends/Reconciliation/Audit).
 Those are Devs 3–4's deliverables, built on top of this module.
->>>>>>> 0cd10e0975d6aa5caf241ce01ae8158df5324744

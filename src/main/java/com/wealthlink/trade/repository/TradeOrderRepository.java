@@ -12,4 +12,5 @@ public interface TradeOrderRepository extends JpaRepository<TradeOrder, UUID> {
     Optional<TradeOrder> findByOrderReference(String orderReference);
     List<TradeOrder> findByPortfolioIdAndStatus(UUID portfolioId, TradeOrderStatus status);
     List<TradeOrder> findByPortfolioId(UUID portfolioId);
+    Optional<TradeOrder> findByIdempotencyKey(String idempotencyKey);
 }

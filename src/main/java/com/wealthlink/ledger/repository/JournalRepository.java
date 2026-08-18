@@ -14,4 +14,5 @@ public interface JournalRepository extends JpaRepository<Journal, UUID> {
     List<Journal> findByStatus(JournalStatus status);
     List<Journal> findByJournalDateBetween(LocalDate from, LocalDate to);
     List<Journal> findByReferenceId(UUID referenceId);
+    Optional<Journal> findByIdempotencyKey(String idempotencyKey);
 }

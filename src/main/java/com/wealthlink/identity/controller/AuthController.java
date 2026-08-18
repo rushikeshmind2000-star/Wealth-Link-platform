@@ -13,6 +13,7 @@ import com.wealthlink.identity.dto.LoginRequest;
 import com.wealthlink.identity.dto.LoginResponse;
 import com.wealthlink.identity.dto.RefreshRequest;
 import com.wealthlink.identity.dto.RefreshResponse;
+import com.wealthlink.identity.service.AuthService;
 
 @Tag(name = "Dev 1 - Foundation", description = "Identity, Reference Data, Customer, Account")
 @Tag(name = "Identity APIs", description = "Maintained by: Kuldeep Pachori")
@@ -20,9 +21,11 @@ import com.wealthlink.identity.dto.RefreshResponse;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final AuthService authService;
+
     @PostMapping("/api/auth/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest payload) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+        return ResponseEntity.ok(authService.login(payload));
     }
 
     @PostMapping("/api/auth/refresh")

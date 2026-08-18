@@ -17,27 +17,29 @@ import com.wealthlink.ledger.dto.LedgerBalanceResponse;
 @RequiredArgsConstructor
 public class LedgerAccountController {
 
-    @GetMapping("/api/ledger/accounts/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<Object> getLedgerAccount(@PathVariable UUID id) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    private final com.wealthlink.ledger.service.LedgerAccountService ledgerAccountService;
+
+    @PostMapping("/api/v1/ledger-accounts")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> createLedgerAccount(@RequestBody com.wealthlink.ledger.dto.CreateLedgerAccountRequest payload) {
+        return ResponseEntity.ok(ledgerAccountService.createLedgerAccount(payload));
     }
 
-    @GetMapping("/api/ledger/accounts/{id}/entries")
+    @GetMapping("/api/v1/ledger-accounts/{ledgerAccountId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<Object>> listLedgerAccountEntries(@PathVariable UUID id) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    public ResponseEntity<Object> getLedgerAccount(@PathVariable UUID ledgerAccountId) {
+        return ResponseEntity.ok(ledgerAccountService.getById(ledgerAccountId));
     }
 
-    @GetMapping("/api/ledger/balances")
+    @GetMapping("/api/v1/ledger-accounts/{ledgerAccountId}/balance")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<LedgerBalanceResponse>> listLedgerBalances() {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    public ResponseEntity<LedgerBalanceResponse> getLedgerBalance(@PathVariable UUID ledgerAccountId) {
+        return ResponseEntity.ok(ledgerAccountService.getBalance(ledgerAccountId));
     }
 
-    @GetMapping("/api/ledger/accounts/{id}/balance")
+    @GetMapping("/api/v1/ledger-accounts/{ledgerAccountId}/entries")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<LedgerBalanceResponse> getLedgerBalance(@PathVariable UUID id) {
+    public ResponseEntity<List<Object>> listLedgerAccountEntries(@PathVariable UUID ledgerAccountId) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 

@@ -18,16 +18,24 @@ import com.wealthlink.trade.dto.RecordExecutionRequest;
 @RequiredArgsConstructor
 public class TradeExecutionController {
 
-    @PostMapping("/api/executions")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ExecutionResponse> recordExecution(@RequestBody RecordExecutionRequest payload) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    private final com.wealthlink.trade.service.TradeExecutionService tradeExecutionService;
+
+    @GetMapping("/api/v1/trade-orders/{orderId}/executions")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<ExecutionResponse>> getOrderExecutions(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(tradeExecutionService.getExecutionsByOrderId(orderId));
     }
 
-    @GetMapping("/api/executions/{id}")
+    @PostMapping("/api/v1/trade-orders/{orderId}/executions")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ExecutionResponse> recordExecution(@PathVariable UUID orderId, @RequestBody RecordExecutionRequest payload) {
+        return ResponseEntity.ok(tradeExecutionService.recordExecution(orderId, payload));
+    }
+
+    @GetMapping("/api/v1/trade-executions/{executionId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<ExecutionResponse> getExecution(@PathVariable UUID id) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    public ResponseEntity<ExecutionResponse> getExecution(@PathVariable UUID executionId) {
+        return ResponseEntity.ok(tradeExecutionService.getById(executionId));
     }
 
 }

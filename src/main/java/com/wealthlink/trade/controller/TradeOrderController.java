@@ -20,40 +20,45 @@ import com.wealthlink.trade.dto.OrderResponse;
 @RequiredArgsConstructor
 public class TradeOrderController {
 
-    @GetMapping("/api/orders")
+    @GetMapping("/api/v1/trade-orders")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
     public ResponseEntity<List<OrderResponse>> listOrders() {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @PostMapping("/api/orders")
+    @PostMapping("/api/v1/trade-orders")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest payload) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @GetMapping("/api/orders/{id}")
+    @GetMapping("/api/v1/trade-orders/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
     public ResponseEntity<OrderResponse> getOrder(@PathVariable UUID id) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @PostMapping("/api/orders/{id}/cancel")
+    @PostMapping("/api/v1/trade-orders/{id}/cancel")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CancelOrderResponse> cancelOrder(@PathVariable UUID id, @RequestBody CancelOrderRequest payload) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @GetMapping("/api/orders/{id}/status")
+    @GetMapping("/api/v1/trade-orders/{id}/status")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
     public ResponseEntity<List<Object>> getOrderStatus(@PathVariable UUID id) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @GetMapping("/api/orders/{id}/executions")
+    @GetMapping("/api/v1/trade-orders/{id}/executions")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
     public ResponseEntity<List<Object>> listOrderExecutions(@PathVariable UUID id) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
+    @GetMapping("/api/v1/portfolios/{portfolioId}/trade-orders")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<OrderResponse>> listOrdersForPortfolio(@PathVariable UUID portfolioId) {
+        return ResponseEntity.ok().build(); // TODO: Delegate to Service
+    }
 }

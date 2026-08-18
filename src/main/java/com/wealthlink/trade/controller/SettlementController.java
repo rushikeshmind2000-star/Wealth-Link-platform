@@ -19,21 +19,29 @@ import com.wealthlink.trade.dto.SettlementResponse;
 @RequiredArgsConstructor
 public class SettlementController {
 
-    @GetMapping("/api/settlements")
+    private final com.wealthlink.trade.service.SettlementService settlementService;
+
+    @PostMapping("/api/v1/trade-executions/{executionId}/settlement")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<SettlementResponse> createSettlement(@PathVariable UUID executionId, @RequestBody CreateSettlementRequest payload) {
+        return ResponseEntity.ok(settlementService.createSettlement(executionId, payload));
+    }
+
+    @GetMapping("/api/v1/settlements/{settlementId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<SettlementResponse>> listSettlements() {
+    public ResponseEntity<SettlementResponse> getSettlement(@PathVariable UUID settlementId) {
+        return ResponseEntity.ok().build(); // TODO: implement getById
+    }
+
+    @PostMapping("/api/v1/settlements/{settlementId}/complete")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<RetrySettlementResponse> completeSettlement(@PathVariable UUID settlementId, @RequestBody Object payload) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @PostMapping("/api/settlements")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<SettlementResponse> createSettlement(@RequestBody CreateSettlementRequest payload) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
-    }
-
-    @PostMapping("/api/settlements/{id}/retry")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RetrySettlementResponse> retrySettlement(@PathVariable UUID id, @RequestBody Object payload) {
+    @GetMapping("/api/v1/settlements/{settlementId}/status")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
+    public ResponseEntity<Object> getSettlementStatus(@PathVariable UUID settlementId) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 

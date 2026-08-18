@@ -19,25 +19,34 @@ import com.wealthlink.ledger.dto.ReverseJournalResponse;
 @RequiredArgsConstructor
 public class JournalController {
 
-    @GetMapping("/api/journals")
+    private final com.wealthlink.ledger.service.JournalService journalService;
+
+    @PostMapping("/api/v1/journals")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<JournalResponse> createJournal(@RequestBody com.wealthlink.ledger.dto.CreateJournalRequest payload) {
+        return ResponseEntity.ok(journalService.createJournal(payload));
+    }
+
+    @GetMapping("/api/v1/journals/{journalId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<JournalResponse>> listJournals() {
+    public ResponseEntity<JournalResponse> getJournal(@PathVariable UUID journalId) {
+        return ResponseEntity.ok(journalService.getById(journalId));
+    }
+
+    @GetMapping("/api/v1/journals/{journalId}/entries")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<Object>> listJournalEntries(@PathVariable UUID journalId) {
+        return ResponseEntity.ok().build(); // TODO: Delegate to Service if needed
+    }
+
+    @PostMapping("/api/v1/journals/{journalId}/entries")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Object> createJournalEntry(@PathVariable UUID journalId, @RequestBody Object payload) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service
     }
 
-    @GetMapping("/api/journals/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<JournalResponse> getJournal(@PathVariable UUID id) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
-    }
-
-    @GetMapping("/api/journals/{id}/entries")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<Object>> listJournalEntries(@PathVariable UUID id) {
-        return ResponseEntity.ok().build(); // TODO: Delegate to Service
-    }
-
-    @PostMapping("/api/journals/{id}/reverse")
+    // Keep reverse journal as it's useful, though not strictly in the basic requirements
+    @PostMapping("/api/v1/journals/{id}/reverse")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ReverseJournalResponse> reverseJournal(@PathVariable UUID id, @RequestBody ReverseJournalRequest payload) {
         return ResponseEntity.ok().build(); // TODO: Delegate to Service

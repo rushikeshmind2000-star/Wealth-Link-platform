@@ -11,6 +11,7 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PositionResponse {
+    private UUID id;
     private UUID fundShareClassId;
     private LocalDate positionDate;
     private BigDecimal quantity;

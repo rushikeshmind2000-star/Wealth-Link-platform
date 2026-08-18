@@ -16,3 +16,6 @@ E:\wealth-link-platform\src\test\java\com\wealthlink\portfolio\PortfolioReposito
 E:\wealth-link-platform\src\test\java\com\wealthlink\reference\CurrencyRepositoryIT.java
 E:\wealth-link-platform\src\test\java\com\wealthlink\reference\MarketRepositoryIT.java
 E:\wealth-link-platform\src\test\java\com\wealthlink\support\AbstractIntegrationTest.java
+E:\wealth-link-platform\src\test\java\com\wealthlink\trade\entity\SettlementTest.java
+E:\wealth-link-platform\src\test\java\com\wealthlink\trade\entity\TradeExecutionTest.java
+E:\wealth-link-platform\src\test\java\com\wealthlink\trade\entity\TradeOrderTest.java

@@ -67,4 +67,14 @@ E:\wealth-link-platform\src\main\java\com\wealthlink\reference\entity\MarketStat
 E:\wealth-link-platform\src\main\java\com\wealthlink\reference\repository\CountryRepository.java
 E:\wealth-link-platform\src\main\java\com\wealthlink\reference\repository\CurrencyRepository.java
 E:\wealth-link-platform\src\main\java\com\wealthlink\reference\repository\MarketRepository.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\Settlement.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\SettlementStatus.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\TradeExecution.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\TradeExecutionStatus.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\TradeOrder.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\TradeOrderSide.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\entity\TradeOrderStatus.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\repository\SettlementRepository.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\repository\TradeExecutionRepository.java
+E:\wealth-link-platform\src\main\java\com\wealthlink\trade\repository\TradeOrderRepository.java
 E:\wealth-link-platform\src\main\java\com\wealthlink\WealthLinkApplication.java

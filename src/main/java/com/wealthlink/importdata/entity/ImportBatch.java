@@ -56,6 +56,14 @@ public class ImportBatch {
     private Integer successCount = 0;
 
     @Builder.Default
+    @Column(name = "records_received", nullable = false)
+    private Integer recordsReceived = 0;
+
+    @Builder.Default
+    @Column(name = "records_failed", nullable = false)
+    private Integer recordsFailed = 0;
+
+    @Builder.Default
     @Column(name = "failure_count", nullable = false)
     private Integer failureCount = 0;
 

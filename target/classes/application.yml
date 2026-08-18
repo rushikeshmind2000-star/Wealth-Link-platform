@@ -15,7 +15,7 @@ spring:
       hibernate:
         format_sql: true
         default_schema: public
-        type.preferred_uuid_jdbc_type: VARCHAR
+        type.preferred_uuid_jdbc_type: UUID
     open-in-view: false
 
   flyway:
@@ -31,3 +31,18 @@ server:
 logging:
   level:
     org.hibernate.SQL: debug
+
+# JWT configuration
+app:
+  jwt:
+    secret: wealth-link-super-secret-jwt-key-2026-must-be-at-least-256-bits-long
+    expiration-ms: 86400000   # 24 hours
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never

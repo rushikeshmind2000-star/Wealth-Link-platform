@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +35,9 @@ public class TradeExecution {
     @Column(name = "status", nullable = false, length = 20)
     private TradeExecutionStatus status;
 
+    @Column(name = "trade_date")
+    private LocalDate tradeDate;
+
     @Column(name = "executed_quantity", nullable = false, precision = 24, scale = 8)
     private BigDecimal executedQuantity;
 
@@ -57,6 +61,13 @@ public class TradeExecution {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "currency_id", nullable = false, foreignKey = @ForeignKey(name = "fk_trade_execution_currency"))
     private Currency currency;
+
+    @Column(name = "external_reference", length = 255)
+    private String externalReference;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Integer version = 0;
 
     @Column(name = "executed_at", nullable = false)
     private Instant executedAt;

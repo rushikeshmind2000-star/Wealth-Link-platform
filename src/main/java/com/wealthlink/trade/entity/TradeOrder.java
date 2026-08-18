@@ -37,8 +37,8 @@ public class TradeOrder {
     private String orderReference;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "side", nullable = false, length = 10)
-    private TradeOrderSide side;
+    @Column(name = "order_type", nullable = false, length = 10)
+    private TradeOrderType orderType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
@@ -47,12 +47,22 @@ public class TradeOrder {
     @Column(name = "requested_quantity", nullable = false, precision = 24, scale = 8)
     private BigDecimal requestedQuantity;
 
+    @Column(name = "limit_price", precision = 24, scale = 8)
+    private BigDecimal limitPrice;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "currency_id", nullable = false, foreignKey = @ForeignKey(name = "fk_trade_order_currency"))
     private Currency currency;
 
+    @Column(name = "idempotency_key", unique = true, length = 255)
+    private String idempotencyKey;
+
     @Column(name = "notes", length = 1000)
     private String notes;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Integer version = 0;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

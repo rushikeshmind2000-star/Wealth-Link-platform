@@ -45,6 +45,10 @@ public class Settlement {
     @JoinColumn(name = "currency_id", nullable = false, foreignKey = @ForeignKey(name = "fk_settlement_currency"))
     private Currency currency;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private Integer version = 0;
+
     @Column(name = "settled_amount", nullable = false, precision = 24, scale = 6)
     private BigDecimal settledAmount;
 

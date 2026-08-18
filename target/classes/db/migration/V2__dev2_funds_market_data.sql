@@ -4,7 +4,7 @@
 -- Funds | Share Classes | Providers | FX Rates | Fund Prices | Imports
 --
 -- Depends on V1__dev1_foundation.sql for CURRENCY / COUNTRY. Real FKs are
--- used directly (no varchar(36) stubs) because Dev 1's foundation module is
+-- used directly (no UUID stubs) because Dev 1's foundation module is
 -- already merged into this codebase.
 --
 -- Everything Dev 3 (Portfolio/Trading/Ledger) needs from this module is
@@ -16,11 +16,11 @@
 -- ---------------------------------------------------------------------
 
 create table fund (
-    id                  varchar(36) primary key default (gen_random_uuid()),
+    id                  UUID primary key default (gen_random_uuid()),
     isin                varchar(12) not null unique,
     name                VARCHAR(255) not null,
-    base_currency_id    varchar(36) not null references currency (id) on delete restrict,
-    domicile_country_id varchar(36) not null references country (id) on delete restrict,
+    base_currency_id    UUID not null references currency (id) on delete restrict,
+    domicile_country_id UUID not null references country (id) on delete restrict,
     status              VARCHAR(255) not null check (status in ('ACTIVE', 'SUSPENDED', 'CLOSED')),
     inception_date      date,
     created_at          TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6),
@@ -28,11 +28,11 @@ create table fund (
 );
 
 create table fund_share_class (
-    id          varchar(36) primary key default (gen_random_uuid()),
-    fund_id     varchar(36) not null references fund (id) on delete restrict,
+    id          UUID primary key default (gen_random_uuid()),
+    fund_id     UUID not null references fund (id) on delete restrict,
     class_code  varchar(30) not null,
     name        VARCHAR(255) not null,
-    currency_id varchar(36) not null references currency (id) on delete restrict,
+    currency_id UUID not null references currency (id) on delete restrict,
     status      VARCHAR(255) not null check (status in ('ACTIVE', 'CLOSED')),
     constraint uq_fund_share_class_fund_code unique (fund_id, class_code)
 );
@@ -42,16 +42,16 @@ create table fund_share_class (
 -- ---------------------------------------------------------------------
 
 create table provider (
-    id     varchar(36) primary key default (gen_random_uuid()),
+    id     UUID primary key default (gen_random_uuid()),
     code   varchar(30) not null unique,
     name   VARCHAR(255) not null,
     status VARCHAR(255) not null check (status in ('ACTIVE', 'DISABLED'))
 );
 
 create table fund_provider_mapping (
-    id                  varchar(36) primary key default (gen_random_uuid()),
-    fund_share_class_id varchar(36) not null references fund_share_class (id) on delete restrict,
-    provider_id         varchar(36) not null references provider (id) on delete restrict,
+    id                  UUID primary key default (gen_random_uuid()),
+    fund_share_class_id UUID not null references fund_share_class (id) on delete restrict,
+    provider_id         UUID not null references provider (id) on delete restrict,
     external_fund_id    VARCHAR(255) not null,
     constraint uq_fund_provider_mapping_provider_external_id unique (provider_id, external_fund_id)
 );
@@ -61,18 +61,18 @@ create table fund_provider_mapping (
 -- ---------------------------------------------------------------------
 
 create table fx_rate_source (
-    id   varchar(36) primary key default (gen_random_uuid()),
+    id   UUID primary key default (gen_random_uuid()),
     code varchar(30) not null unique,
     name VARCHAR(255) not null
 );
 
 create table fx_rate (
-    id                 varchar(36) primary key default (gen_random_uuid()),
-    base_currency_id   varchar(36) not null references currency (id) on delete restrict,
-    quote_currency_id  varchar(36) not null references currency (id) on delete restrict,
+    id                 UUID primary key default (gen_random_uuid()),
+    base_currency_id   UUID not null references currency (id) on delete restrict,
+    quote_currency_id  UUID not null references currency (id) on delete restrict,
     rate_date          date not null,
     rate_type          VARCHAR(255) not null check (rate_type in ('SPOT', 'CLOSE')),
-    source_id          varchar(36) not null references fx_rate_source (id) on delete restrict,
+    source_id          UUID not null references fx_rate_source (id) on delete restrict,
     rate               DECIMAL(24, 8) not null check (rate > 0),
     constraint uq_fx_rate_business_key
         unique (base_currency_id, quote_currency_id, rate_date, rate_type, source_id)
@@ -84,17 +84,17 @@ create table fx_rate (
 -- ---------------------------------------------------------------------
 
 create table import_job (
-    id          varchar(36) primary key default (gen_random_uuid()),
+    id          UUID primary key default (gen_random_uuid()),
     name        VARCHAR(255) not null,
-    provider_id varchar(36) not null references provider (id) on delete restrict,
+    provider_id UUID not null references provider (id) on delete restrict,
     job_type    VARCHAR(255) not null check (job_type in ('FUND_PRICE_IMPORT', 'FX_RATE_IMPORT')),
     status      VARCHAR(255) not null check (status in ('ACTIVE', 'DISABLED')),
     created_at  TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6)
 );
 
 create table import_batch (
-    id              varchar(36) primary key default (gen_random_uuid()),
-    import_job_id   varchar(36) not null references import_job (id) on delete restrict,
+    id              UUID primary key default (gen_random_uuid()),
+    import_job_id   UUID not null references import_job (id) on delete restrict,
     idempotency_key VARCHAR(255) not null unique,
     status          VARCHAR(255) not null check (status in ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED')),
     started_at      TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6),
@@ -110,14 +110,14 @@ create table import_batch (
 -- ---------------------------------------------------------------------
 
 create table fund_price (
-    id                   varchar(36) primary key default (gen_random_uuid()),
-    fund_share_class_id  varchar(36) not null references fund_share_class (id) on delete restrict,
+    id                   UUID primary key default (gen_random_uuid()),
+    fund_share_class_id  UUID not null references fund_share_class (id) on delete restrict,
     price_date           date not null,
     price_type           VARCHAR(255) not null check (price_type in ('NAV', 'BID', 'ASK')),
-    provider_id          varchar(36) not null references provider (id) on delete restrict,
-    currency_id          varchar(36) not null references currency (id) on delete restrict,
+    provider_id          UUID not null references provider (id) on delete restrict,
+    currency_id          UUID not null references currency (id) on delete restrict,
     price                DECIMAL(24, 8) not null check (price > 0),
-    import_batch_id      varchar(36) references import_batch (id) on delete set null,
+    import_batch_id      UUID references import_batch (id) on delete set null,
     -- Critical business rule (DEV2-D1 acceptance criteria): uniqueness is
     -- anchored to the internal fund_share_class_id, not any provider's
     -- external identifier, per the architecture doc.
@@ -128,12 +128,12 @@ create table fund_price (
 -- import_item comes after fund_price because it optionally points at the
 -- fund_price row it produced.
 create table import_item (
-    id               varchar(36) primary key default (gen_random_uuid()),
-    import_batch_id  varchar(36) not null references import_batch (id) on delete restrict,
+    id               UUID primary key default (gen_random_uuid()),
+    import_batch_id  UUID not null references import_batch (id) on delete restrict,
     raw_payload      jsonb not null,
     status           VARCHAR(255) not null check (status in ('PENDING', 'SUCCESS', 'FAILED')),
     error_details    VARCHAR(255),
-    fund_price_id    varchar(36) references fund_price (id) on delete set null,
+    fund_price_id    UUID references fund_price (id) on delete set null,
     processed_at     TIMESTAMP(6)
 );
 

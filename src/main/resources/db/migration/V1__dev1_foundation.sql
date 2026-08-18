@@ -15,7 +15,7 @@
 -- ---------------------------------------------------------------------
 
 create table app_user (
-    id            varchar(36) primary key default (gen_random_uuid()),
+    id            UUID primary key default (gen_random_uuid()),
     username      VARCHAR(255) not null unique,
     email         VARCHAR(255) not null unique,
     password_hash VARCHAR(255) not null,
@@ -25,13 +25,13 @@ create table app_user (
 );
 
 create table role (
-    id   varchar(36) primary key default (gen_random_uuid()),
+    id   UUID primary key default (gen_random_uuid()),
     name VARCHAR(255) not null unique
 );
 
 create table user_role (
-    user_id varchar(36) not null references app_user (id) on delete cascade,
-    role_id varchar(36) not null references role (id) on delete cascade,
+    user_id UUID not null references app_user (id) on delete cascade,
+    role_id UUID not null references role (id) on delete cascade,
     primary key (user_id, role_id)
 );
 
@@ -40,23 +40,23 @@ create table user_role (
 -- ---------------------------------------------------------------------
 
 create table currency (
-    id                varchar(36) primary key default (gen_random_uuid()),
+    id                UUID primary key default (gen_random_uuid()),
     iso_code            varchar(3) not null unique,
     name              VARCHAR(255) not null,
     minor_unit_digits smallint not null check (minor_unit_digits >= 0)
 );
 
 create table country (
-    id                  varchar(36) primary key default (gen_random_uuid()),
+    id                  UUID primary key default (gen_random_uuid()),
     iso_code            varchar(2) not null unique,
     name                VARCHAR(255) not null,
-    default_currency_id varchar(36) not null references currency (id) on delete restrict,
+    default_currency_id UUID not null references currency (id) on delete restrict,
     timezone            VARCHAR(255) not null
 );
 
 create table market (
-    id         varchar(36) primary key default (gen_random_uuid()),
-    country_id varchar(36) not null references country (id) on delete restrict,
+    id         UUID primary key default (gen_random_uuid()),
+    country_id UUID not null references country (id) on delete restrict,
     name       VARCHAR(255) not null,
     mic_code   VARCHAR(255) not null,
     timezone   VARCHAR(255) not null,
@@ -68,19 +68,19 @@ create table market (
 -- ---------------------------------------------------------------------
 
 create table customer (
-    id                        varchar(36) primary key default (gen_random_uuid()),
+    id                        UUID primary key default (gen_random_uuid()),
     customer_number           VARCHAR(255) not null unique,
     customer_type             VARCHAR(255) not null check (customer_type in ('INDIVIDUAL', 'CORPORATE')),
     status                    VARCHAR(255) not null check (status in ('ACTIVE', 'PENDING_KYC', 'SUSPENDED', 'CLOSED')),
-    country_id                varchar(36) not null references country (id) on delete restrict,
-    tax_residency_country_id  varchar(36) not null references country (id) on delete restrict,
+    country_id                UUID not null references country (id) on delete restrict,
+    tax_residency_country_id  UUID not null references country (id) on delete restrict,
     created_at                TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6)
 );
 
 create table customer_contact (
-    id          varchar(36) primary key default (gen_random_uuid()),
-    customer_id varchar(36) not null references customer (id) on delete restrict,
+    id          UUID primary key default (gen_random_uuid()),
+    customer_id UUID not null references customer (id) on delete restrict,
     contact_type VARCHAR(255) not null check (contact_type in ('EMAIL', 'PHONE', 'ADDRESS')),
     value       VARCHAR(255) not null,
     is_primary  boolean not null default false
@@ -93,11 +93,11 @@ create table customer_contact (
 --    where is_primary = true;
 
 create table customer_identifier (
-    id                 varchar(36) primary key default (gen_random_uuid()),
-    customer_id        varchar(36) not null references customer (id) on delete restrict,
+    id                 UUID primary key default (gen_random_uuid()),
+    customer_id        UUID not null references customer (id) on delete restrict,
     id_type            VARCHAR(255) not null,
     id_value           VARCHAR(255) not null,
-    issuing_country_id varchar(36) not null references country (id) on delete restrict
+    issuing_country_id UUID not null references country (id) on delete restrict
 );
 
 -- ---------------------------------------------------------------------
@@ -105,19 +105,19 @@ create table customer_identifier (
 -- ---------------------------------------------------------------------
 
 create table account (
-    id             varchar(36) primary key default (gen_random_uuid()),
+    id             UUID primary key default (gen_random_uuid()),
     account_number VARCHAR(255) not null unique,
     account_type   VARCHAR(255) not null check (account_type in ('CASH', 'INVESTMENT')),
-    currency_id    varchar(36) not null references currency (id) on delete restrict,
-    country_id     varchar(36) not null references country (id) on delete restrict,
+    currency_id    UUID not null references currency (id) on delete restrict,
+    country_id     UUID not null references country (id) on delete restrict,
     status         VARCHAR(255) not null check (status in ('ACTIVE', 'DORMANT', 'CLOSED')),
     opened_at      TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6)
 );
 
 create table account_owner (
-    id             varchar(36) primary key default (gen_random_uuid()),
-    account_id     varchar(36) not null references account (id) on delete restrict,
-    customer_id    varchar(36) not null references customer (id) on delete restrict,
+    id             UUID primary key default (gen_random_uuid()),
+    account_id     UUID not null references account (id) on delete restrict,
+    customer_id    UUID not null references customer (id) on delete restrict,
     ownership_role VARCHAR(255) not null check (ownership_role in ('PRIMARY', 'JOINT'))
 );
 

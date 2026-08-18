@@ -16,19 +16,19 @@
 -- ---------------------------------------------------------------------
 
 create table fund (
-    id                  varchar(36) primary key default (UUID()),
+    id                  varchar(36) primary key default (gen_random_uuid()),
     isin                varchar(12) not null unique,
     name                VARCHAR(255) not null,
     base_currency_id    varchar(36) not null references currency (id) on delete restrict,
     domicile_country_id varchar(36) not null references country (id) on delete restrict,
     status              VARCHAR(255) not null check (status in ('ACTIVE', 'SUSPENDED', 'CLOSED')),
     inception_date      date,
-    created_at          DATETIME(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at          DATETIME(6) not null default CURRENT_TIMESTAMP(6)
+    created_at          TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6)
 );
 
 create table fund_share_class (
-    id          varchar(36) primary key default (UUID()),
+    id          varchar(36) primary key default (gen_random_uuid()),
     fund_id     varchar(36) not null references fund (id) on delete restrict,
     class_code  varchar(30) not null,
     name        VARCHAR(255) not null,
@@ -42,14 +42,14 @@ create table fund_share_class (
 -- ---------------------------------------------------------------------
 
 create table provider (
-    id     varchar(36) primary key default (UUID()),
+    id     varchar(36) primary key default (gen_random_uuid()),
     code   varchar(30) not null unique,
     name   VARCHAR(255) not null,
     status VARCHAR(255) not null check (status in ('ACTIVE', 'DISABLED'))
 );
 
 create table fund_provider_mapping (
-    id                  varchar(36) primary key default (UUID()),
+    id                  varchar(36) primary key default (gen_random_uuid()),
     fund_share_class_id varchar(36) not null references fund_share_class (id) on delete restrict,
     provider_id         varchar(36) not null references provider (id) on delete restrict,
     external_fund_id    VARCHAR(255) not null,
@@ -61,13 +61,13 @@ create table fund_provider_mapping (
 -- ---------------------------------------------------------------------
 
 create table fx_rate_source (
-    id   varchar(36) primary key default (UUID()),
+    id   varchar(36) primary key default (gen_random_uuid()),
     code varchar(30) not null unique,
     name VARCHAR(255) not null
 );
 
 create table fx_rate (
-    id                 varchar(36) primary key default (UUID()),
+    id                 varchar(36) primary key default (gen_random_uuid()),
     base_currency_id   varchar(36) not null references currency (id) on delete restrict,
     quote_currency_id  varchar(36) not null references currency (id) on delete restrict,
     rate_date          date not null,
@@ -84,21 +84,21 @@ create table fx_rate (
 -- ---------------------------------------------------------------------
 
 create table import_job (
-    id          varchar(36) primary key default (UUID()),
+    id          varchar(36) primary key default (gen_random_uuid()),
     name        VARCHAR(255) not null,
     provider_id varchar(36) not null references provider (id) on delete restrict,
     job_type    VARCHAR(255) not null check (job_type in ('FUND_PRICE_IMPORT', 'FX_RATE_IMPORT')),
     status      VARCHAR(255) not null check (status in ('ACTIVE', 'DISABLED')),
-    created_at  DATETIME(6) not null default CURRENT_TIMESTAMP(6)
+    created_at  TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6)
 );
 
 create table import_batch (
-    id              varchar(36) primary key default (UUID()),
+    id              varchar(36) primary key default (gen_random_uuid()),
     import_job_id   varchar(36) not null references import_job (id) on delete restrict,
     idempotency_key VARCHAR(255) not null unique,
     status          VARCHAR(255) not null check (status in ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED')),
-    started_at      DATETIME(6) not null default CURRENT_TIMESTAMP(6),
-    completed_at    DATETIME(6),
+    started_at      TIMESTAMP(6) not null default CURRENT_TIMESTAMP(6),
+    completed_at    TIMESTAMP(6),
     total_items     integer not null default 0,
     success_count   integer not null default 0,
     failure_count   integer not null default 0,
@@ -110,7 +110,7 @@ create table import_batch (
 -- ---------------------------------------------------------------------
 
 create table fund_price (
-    id                   varchar(36) primary key default (UUID()),
+    id                   varchar(36) primary key default (gen_random_uuid()),
     fund_share_class_id  varchar(36) not null references fund_share_class (id) on delete restrict,
     price_date           date not null,
     price_type           VARCHAR(255) not null check (price_type in ('NAV', 'BID', 'ASK')),
@@ -128,13 +128,13 @@ create table fund_price (
 -- import_item comes after fund_price because it optionally points at the
 -- fund_price row it produced.
 create table import_item (
-    id               varchar(36) primary key default (UUID()),
+    id               varchar(36) primary key default (gen_random_uuid()),
     import_batch_id  varchar(36) not null references import_batch (id) on delete restrict,
-    raw_payload      json not null,
+    raw_payload      jsonb not null,
     status           VARCHAR(255) not null check (status in ('PENDING', 'SUCCESS', 'FAILED')),
     error_details    VARCHAR(255),
     fund_price_id    varchar(36) references fund_price (id) on delete set null,
-    processed_at     DATETIME(6)
+    processed_at     TIMESTAMP(6)
 );
 
 -- ---------------------------------------------------------------------

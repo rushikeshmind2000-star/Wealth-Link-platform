@@ -3,10 +3,10 @@ spring:
     name: wealth-link-platform
 
   datasource:
-    url: jdbc:mysql://localhost:3306/wealth_link?createDatabaseIfNotExist=true&serverTimezone=UTC
-    username: root
-    password: Rushee@2002
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://postgres.coolifyprojects.techpulseitservices.com:5432/wealth_link
+    username: weatlh
+    password: Weatlh@123
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:

@@ -1,22 +1,34 @@
-version: "3.8"
-
 services:
-  postgres:
-    image: postgres:16
-    container_name: wealth-link-postgres
+  mysql:
+    image: mysql:8.0
+    container_name: wealth-link-mysql
     environment:
-      POSTGRES_DB: wealth_link
-      POSTGRES_USER: wealth_link
-      POSTGRES_PASSWORD: wealth_link
+      MYSQL_DATABASE: wealth_link
+      MYSQL_USER: wealth_link
+      MYSQL_PASSWORD: wealth_link
+      MYSQL_ROOT_PASSWORD: wealth_link
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - wealth-link-pg-data:/var/lib/postgresql/data
+      - wealth-link-mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wealth_link -d wealth_link"]
-      interval: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
+
+  app:
+    build: .
+    container_name: wealth-link-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/wealth_link?serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=wealth_link
+      - SPRING_DATASOURCE_PASSWORD=wealth_link
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 volumes:
-  wealth-link-pg-data:
+  wealth-link-mysql-data:

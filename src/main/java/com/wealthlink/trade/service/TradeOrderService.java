@@ -62,7 +62,7 @@ public class TradeOrderService {
         order.setLimitPrice(request.getLimitPrice());
         order.setIdempotencyKey(request.getIdempotencyKey());
         order.setOrderReference(UUID.randomUUID().toString());
-        order.setStatus(TradeOrderStatus.NEW);
+        order.setStatus(TradeOrderStatus.PENDING);
         
         TradeOrder savedOrder = tradeOrderRepository.save(order);
         return mapToResponse(savedOrder);

@@ -1,5 +1,5 @@
 package com.wealthlink.trade.entity;
 
 public enum TradeExecutionStatus {
-    PENDING, CONFIRMED, FAILED, CANCELLED, SETTLED
+    PENDING, CONFIRMED, FAILED, CANCELLED
 }

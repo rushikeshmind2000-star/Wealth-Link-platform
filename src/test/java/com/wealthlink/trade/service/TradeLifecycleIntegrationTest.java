@@ -133,7 +133,7 @@ public class TradeLifecycleIntegrationTest {
         orderReq.setIdempotencyKey("idem-" + UUID.randomUUID());
 
         var orderRes = tradeOrderService.createOrder(orderReq);
-        assertThat(orderRes.getStatus()).isEqualTo(TradeOrderStatus.NEW.name());
+        assertThat(orderRes.getStatus()).isEqualTo(TradeOrderStatus.PENDING.name());
 
         // 2. Record Execution
         RecordExecutionRequest execReq = new RecordExecutionRequest();

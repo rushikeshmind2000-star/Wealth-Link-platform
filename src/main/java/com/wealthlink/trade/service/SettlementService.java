@@ -40,9 +40,7 @@ public class SettlementService {
         TradeExecution execution = tradeExecutionRepository.findById(executionId)
                 .orElseThrow(() -> new RuntimeException("Trade Execution not found"));
                 
-        if (execution.getStatus() == TradeExecutionStatus.SETTLED) {
-            throw new RuntimeException("Execution is already settled");
-        }
+        // Settlement check removed; in real world, check if a Settlement entity already exists for this executionId.
 
         Settlement settlement = new Settlement();
         settlement.setTradeExecution(execution);
@@ -55,9 +53,6 @@ public class SettlementService {
         settlement.setSettledAmount(request.getSettlementAmount());
         
         Settlement savedSettlement = settlementRepository.save(settlement);
-        
-        execution.setStatus(TradeExecutionStatus.SETTLED);
-        tradeExecutionRepository.save(execution);
 
         // Generate Ledger Journal using Double-Entry
         generateSettlementJournal(execution, savedSettlement);

@@ -79,7 +79,7 @@ public class TradeOrder {
             this.updatedAt = Instant.now();
         }
         if (this.status == null) {
-            this.status = TradeOrderStatus.NEW;
+            this.status = TradeOrderStatus.PENDING;
         }
     }
 

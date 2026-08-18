@@ -20,7 +20,7 @@ class TradeOrderTest {
 
         assertThat(order.getCreatedAt()).isNotNull();
         assertThat(order.getUpdatedAt()).isNotNull();
-        assertThat(order.getStatus()).isEqualTo(TradeOrderStatus.NEW);
+        assertThat(order.getStatus()).isEqualTo(TradeOrderStatus.PENDING);
     }
 
     @Test

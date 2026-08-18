@@ -3,7 +3,7 @@ spring:
     name: wealth-link-platform
 
   datasource:
-    url: jdbc:postgresql://postgres.coolifyprojects.techpulseitservices.com:5432/wealth_link
+    url: jdbc:postgresql://postgres.coolifyprojects.techpulseitservices.com:5432/wealth-link-platform
     username: weatlh
     password: Weatlh@123
     driver-class-name: org.postgresql.Driver

@@ -13,6 +13,21 @@ jobs:
   build-test-analyze:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: wealth-link-platform
+          POSTGRES_USER: weatlh
+          POSTGRES_PASSWORD: dummy-password-for-tests
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -27,9 +42,10 @@ jobs:
           cache: maven
 
       - name: Build and Test with Maven
-        # Passes a dummy password for tests to connect to the DB if needed.
-        # This prevents tests from failing when application.yml falls back to an empty string.
+        # Override the datasource properties to point to the local GitHub Postgres service
         env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/wealth-link-platform
+          SPRING_DATASOURCE_USERNAME: weatlh
           DB_PASSWORD: "dummy-password-for-tests"
         run: mvn clean verify
 

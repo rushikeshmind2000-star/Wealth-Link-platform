@@ -19,6 +19,11 @@
 
     <properties>
         <java.version>17</java.version>
+        <!-- SonarCloud Configuration -->
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria.e1.ruleKey>plsql:S1192</sonar.issue.ignore.multicriteria.e1.ruleKey>
+        <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.sql</sonar.issue.ignore.multicriteria.e1.resourceKey>
     </properties>
 
     <dependencies>

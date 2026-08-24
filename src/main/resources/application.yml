@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://postgres.coolifyprojects.techpulseitservices.com:5432/wealth-link-platform
     username: weatlh
-    password: Weatlh@123
+    password: ${DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -35,7 +35,7 @@ logging:
 # JWT configuration
 app:
   jwt:
-    secret: wealth-link-super-secret-jwt-key-2026-must-be-at-least-256-bits-long
+    secret: ${JWT_SECRET:default-fallback-secret-key-that-should-be-changed-in-production}
     expiration-ms: 86400000   # 24 hours
 
 management:
